@@ -43,7 +43,7 @@ ul li.checked {
   text-decoration: line-through;
 }
 
-/* Add a "checked" mark when clicked on */
+/* Add a checked mark when clicked on */
 ul li.checked::before {
   content: "";
   position: absolute;
@@ -111,7 +111,7 @@ input {
   font-size: 16px;
 }
 
-/* Style the "Add" button */
+/* Style the Add button */
 .addBtn {
   padding: 10px;
   width: 25%;
@@ -129,6 +129,7 @@ input {
   background-color: #bbb;
 }
 
+/* Split screen space in half */
 .split-in-half {
   padding: 10px;
 }
