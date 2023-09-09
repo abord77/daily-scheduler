@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { getDate } from "./date.js";
+import axios from "axios";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const taskListPersonal = [];
 const taskListWork = [];
+const weatherLocation = "waterloo";
 
 app.get("/", (req, res) => {
   const day = getDate();
@@ -29,15 +31,30 @@ app.get("/personal", (req, res) => {
   const day = getDate();
 
   res.render(__dirname + "/views/list-personal.ejs", {
-    listTitle: day,
+    listTitle: "Personal List",
+    date: day,
     tasksPersonal: taskListPersonal,
   });
 });
 
-app.get("/work", function(req, res){
+app.get("/work", (req, res) => {
+  const day = getDate();
+
   res.render(__dirname + "/views/list-work.ejs", {
     listTitle: "Work List", 
+    date: day,
     tasksWork: taskListWork
+  });
+});
+
+app.get("/weather", (req, res) => {
+  const day = getDate();
+  
+  const apiCall = "http://api.weatherapi.com/v1/forecast.json?q=" + weatherLocation + "&aqi=yes&key=b387413b61dc4cc4b53155226233108";
+  res.render(__dirname + "/views/weather.ejs", {
+    listTitle: "Current weather",
+    date: day,
+    location: weatherLocation,
   });
 });
 

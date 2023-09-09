@@ -1,0 +1,20 @@
+<%- include("header") -%>
+
+  <div class="box" id="heading">
+    <h1> <%= listTitle %> </h1>
+    <h3> <%= date %> </h3>
+  </div>
+
+  <div class="box">
+      <form class="item" action="/weather" method="POST">
+        <input type="text" name="location" placeholder="Location..." />
+        <button type="submit" name="list">+</button>
+      </form>
+  </div>
+
+  <div class="box">
+    <button onclick="location.href='/personal'">Click me</button>
+    <button onclick="location.href='/work'">Click me</button>
+  </div>
+
+<%- include("footer") -%>
