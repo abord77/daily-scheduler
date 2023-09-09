@@ -1,87 +1,74 @@
-const eventscheckbox = document.getElementById('events-checkbox');
-		const events_inputFieldContainer = document.getElementById('events-input-field-container');
-		
-		eventscheckbox.addEventListener('change', function() {
-			if (this.checked) {
-				events_inputFieldContainer.classList.add('show');
-			} else {
-				events_inputFieldContainer.classList.remove('show');
-			}
-		});
+import express from "express";
+import bodyParser from "body-parser";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { getDate } from "./date.js";
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-        const personalcheckbox = document.getElementById('personal-events');
-		const personal_inputFieldContainer = document.getElementById('personal-input-field-container');
-		
-		personalcheckbox.addEventListener('change', function() {
-			if (this.checked) {
-				personal_inputFieldContainer.classList.add('show');
-			} else {
-			    personal_inputFieldContainer.classList.remove('show');
-			}
-		});
+const app = express();
+const port = 3000;
 
-// const btn = document.querySelector('#dark-mode-btn');
-// const body = document.querySelector('body');
+app.set("view engine", "ejs");
 
-// btn.addEventListener('click', function() {
-//	body.classList.toggle('dark-mode');
-//});
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-function changeId() {
-	const myDiv = document.getElementById("dark-mode-apply");
-	myDiv.classList.toggle("dark-mode");
-  }
+const taskListPersonal = [];
+const taskListWork = [];
 
+app.get("/", (req, res) => {
+  const day = getDate();
 
-  const form = document.getElementById('input-form');
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const email = formData.get('email');
-	const fname = formData.get('fname');
-	const lname = formData.get('lname');
-
-	const weather = formData.get('weather-label');
-
-	const events_check = formData.get('events-label');
-	const events_link = formData.get('events-input');
-
-	const checkbox = formData.get('checkbox-input');
-
-	const personal = formData.get('personal-toggle');
-	const personalcal = formData.get('personalcal-input');
-
-    console.log(email, fname, lname, weather, events_check, events_link, checkbox, personalcal);
-    // You can now store the data into JavaScript variables or do something else with it
+  res.render(__dirname + "/views/login.ejs", {
+    listTitle: day,
+    tasksPersonal: taskListPersonal,
   });
+});
 
+app.get("/personal", (req, res) => {
+  const day = getDate();
 
+  res.render(__dirname + "/views/list-personal.ejs", {
+    listTitle: day,
+    tasksPersonal: taskListPersonal,
+  });
+});
 
-  // JavaScript code
-load("js.jar");
+app.get("/work", function(req, res){
+  res.render(__dirname + "/views/list-work.ejs", {
+    listTitle: "Work List", 
+    tasksWork: taskListWork
+  });
+});
 
-var test = Packages.test;
+app.post("/", (req, res) => {
+  const usr = req.body["uname"];
+  const pwd = req.body["psw"];
+  res.redirect("/personal");
+});
 
-function callJavaFunction() {
-  var result = test.myJavaFunction("Message from JavaScript");
-  var jsResult = Context.javaToJS(result, this);
-  return jsResult;
-}
-
-var myResult = callJavaFunction();
-console.log(myResult);
-
-
-// JavaScript code
-function callJavaFunction() {
-	var xhr = new XMLHttpRequest();
-	xhr.onreadystatechange = function() {
-	  if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-		var result = xhr.responseText;
-		console.log(result);
-	  }
-	};
-	xhr.open('GET', 'http://example.com/myWebService/myJavaFunction', true);
-	xhr.send();
+app.post("/personal", (req, res) => {
+  const taskName = req.body["taskName"];
+  if (taskName !== "") {
+    taskListPersonal.push(taskName);
   }
-  
+  res.redirect("/personal");
+});
+
+app.post("/work", (req, res) => {
+  const taskName = req.body["taskName"];
+  if (taskName !== "") {
+    taskListWork.push(taskName);
+  }
+  res.redirect("/work");
+});
+
+/*
+app.post("/removetask", (req, res) => {
+  console.log("hi");
+  res.redirect("/");
+});*/
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
