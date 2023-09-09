@@ -1,0 +1,23 @@
+<%- include("header") -%>
+
+  <div class="box" id="heading">
+    <h1> <%= listTitle %> </h1>
+  </div>
+
+  <div class="box">
+    <% if (locals.tasksPersonal) { %>
+      <% for (let i = 0; i < tasksPersonal.length; i++) { %>
+        <div class="item">
+          <input type="checkbox">
+          <p><%=  tasksPersonal[i]  %></p>
+        </div>
+      <% } %>
+    <% } %>
+
+      <form class="item" action="/personal" method="POST">
+        <input type="text" name="taskName" placeholder="Task..." />
+        <button type="submit" name="list">+</button>
+      </form>
+  </div>
+
+<%- include("footer") -%>
