@@ -1,5 +1,3 @@
-//jshint esversion:6
-
 export const getDate = () => {
 
   const today = new Date();
@@ -11,7 +9,6 @@ export const getDate = () => {
   };
 
   return today.toLocaleDateString("en-US", options);
-
 };
 
 /*

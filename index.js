@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const taskListPersonal = [];
 const taskListWork = [];
-const weatherLocation = "waterloo";
+let weatherLocation = "waterloo";
 
 app.get("/", (req, res) => {
   const day = getDate();
@@ -47,15 +47,33 @@ app.get("/work", (req, res) => {
   });
 });
 
-app.get("/weather", (req, res) => {
+app.get("/weather", async (req, res) => {
   const day = getDate();
   
-  const apiCall = "http://api.weatherapi.com/v1/forecast.json?q=" + weatherLocation + "&aqi=yes&key=b387413b61dc4cc4b53155226233108";
-  res.render(__dirname + "/views/weather.ejs", {
-    listTitle: "Current weather",
-    date: day,
-    location: weatherLocation,
-  });
+  try {
+    const apiCall = await axios.get("http://api.weatherapi.com/v1/forecast.json", {
+      params: {
+        q: weatherLocation,
+        aqi: "yes",
+        key: "b387413b61dc4cc4b53155226233108",
+      },
+    });
+    const myJSON = JSON.stringify(apiCall.data);
+    const myObj = JSON.parse(myJSON);
+    res.render(__dirname + "/views/weather.ejs", {
+      listTitle: "Current weather",
+      date: day,
+      location: weatherLocation,
+      data: myObj,
+    });
+  } catch (error) {
+    res.render(__dirname + "/views/weather.ejs", {
+      listTitle: "Current weather",
+      date: day,
+      location: weatherLocation,
+      data: JSON.stringify(error.response?.data),
+    });
+  }
 });
 
 app.post("/", (req, res) => {
@@ -80,6 +98,13 @@ app.post("/work", (req, res) => {
   res.redirect("/work");
 });
 
+app.post("/weather", (req, res) => {
+  const loc = req.body["location"];
+  if (loc !== "") {
+    weatherLocation = loc;
+  }
+  res.redirect("/weather");
+});
 /*
 app.post("/removetask", (req, res) => {
   console.log("hi");
