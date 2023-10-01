@@ -21,19 +21,12 @@ app.use(cors(corsOptions));
 
 // initialize middleware
 app.use(express.json({ extended: false }));
-const path = require('path');
-
-app.use(express.static(path.join(__dirname, '../client/public')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/public'), 'index.html');
-  res.end();
-})
+app.get("/", (req, res) => res.send("Server is running"));
 
 // use routes
 app.use('/api/data', data);
 
 // setting up port
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => console.log(`server is running on http://localhost:${PORT}`));
